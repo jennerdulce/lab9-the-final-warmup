@@ -1,4 +1,5 @@
 import { LitElement, html, css } from 'lit';
+import { repeat } from 'lit/directives/repeat.js';
 import './todo-item.js';
 
 /**
@@ -12,38 +13,44 @@ export class TodoList extends LitElement {
   static styles = css`
     :host {
       display: block;
+      min-height: 8rem;
     }
 
     .empty-state {
       text-align: center;
-      padding: 40px 20px;
+      padding: 2.5rem 1.25rem;
       color: white;
-      font-size: 18px;
+      font-size: 1.125rem;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
     }
 
     .empty-icon {
-      font-size: 48px;
-      margin-bottom: 16px;
+      font-size: 3rem;
+      margin-bottom: 1rem;
     }
 
     .list-container {
-      max-height: 500px;
+      max-height: 31.25rem;
+      min-height: 14rem;
       overflow-y: auto;
     }
 
     /* Custom scrollbar */
     .list-container::-webkit-scrollbar {
-      width: 8px;
+      width: 0.5rem;
     }
 
     .list-container::-webkit-scrollbar-track {
       background: rgba(255, 255, 255, 0.1);
-      border-radius: 4px;
+      border-radius: 0.25rem;
     }
 
     .list-container::-webkit-scrollbar-thumb {
       background: rgba(255, 255, 255, 0.3);
-      border-radius: 4px;
+      border-radius: 0.25rem;
     }
 
     .list-container::-webkit-scrollbar-thumb:hover {
@@ -68,9 +75,11 @@ export class TodoList extends LitElement {
 
     return html`
       <div class="list-container">
-        ${this.todos.map(todo => html`
-          <todo-item .todo=${todo}></todo-item>
-        `)}
+        ${repeat(
+          this.todos,
+          (todo) => todo.id,
+          (todo) => html`<todo-item .todo=${todo}></todo-item>`
+        )}
       </div>
     `;
   }

@@ -20,33 +20,35 @@ export class TodoApp extends LitElement {
 
     .app-container {
       background: white;
-      border-radius: 16px;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-      padding: 32px;
-      min-height: 400px;
+      border-radius: 1rem;
+      box-shadow: 0 0.625rem 2.5rem rgba(0, 0, 0, 0.2);
+      padding: 2rem;
+      min-height: 25rem;
+      display: flex;
+      flex-direction: column;
     }
 
     h1 {
-      margin: 0 0 8px 0;
+      margin: 0 0 0.5rem 0;
       color: #333;
-      font-size: 32px;
+      font-size: 2rem;
       font-weight: 700;
     }
 
     .subtitle {
       color: #666;
-      margin-bottom: 24px;
-      font-size: 14px;
+      margin-bottom: 1.5rem;
+      font-size: 0.875rem;
     }
 
     .stats {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 16px;
+      padding: 1rem;
       background: #f5f5f5;
-      border-radius: 8px;
-      margin-bottom: 20px;
+      border-radius: 0.5rem;
+      margin-bottom: 1.25rem;
     }
 
     .stat-item {
@@ -56,30 +58,30 @@ export class TodoApp extends LitElement {
     }
 
     .stat-value {
-      font-size: 24px;
+      font-size: 1.5rem;
       font-weight: 700;
       color: #667eea;
     }
 
     .stat-label {
-      font-size: 12px;
+      font-size: 0.75rem;
       color: #666;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.03125rem;
     }
 
     .actions {
       display: flex;
-      gap: 8px;
-      margin-top: 20px;
+      gap: 0.5rem;
+      margin-top: 1.25rem;
     }
 
     button {
       flex: 1;
-      padding: 10px 16px;
+      padding: 0.625rem 1rem;
       border: none;
-      border-radius: 8px;
-      font-size: 14px;
+      border-radius: 0.5rem;
+      font-size: 0.875rem;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.2s;
@@ -109,12 +111,12 @@ export class TodoApp extends LitElement {
     }
 
     .footer {
-      margin-top: 20px;
-      padding-top: 20px;
-      border-top: 1px solid #e0e0e0;
+      margin-top: 1.25rem;
+      padding-top: 1.25rem;
+      border-top: 0.0625rem solid #e0e0e0;
       text-align: center;
       color: #666;
-      font-size: 12px;
+      font-size: 0.75rem;
     }
   `;
 

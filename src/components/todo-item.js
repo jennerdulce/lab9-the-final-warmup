@@ -18,27 +18,27 @@ export class TodoItem extends LitElement {
     .todo-item {
       display: flex;
       align-items: center;
-      gap: 12px;
-      padding: 16px;
+      gap: 0.75rem;
+      padding: 1rem;
       background: white;
-      border-radius: 8px;
-      margin-bottom: 8px;
+      border-radius: 0.5rem;
+      margin-bottom: 0.5rem;
       transition: transform 0.2s, box-shadow 0.2s;
     }
 
     .todo-item:hover {
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.1);
     }
 
     .checkbox {
-      width: 20px;
-      height: 20px;
+      width: 1.25rem;
+      height: 1.25rem;
       cursor: pointer;
     }
 
     .todo-text {
       flex: 1;
-      font-size: 16px;
+      font-size: 1rem;
       color: #333;
       word-break: break-word;
     }
@@ -50,24 +50,24 @@ export class TodoItem extends LitElement {
 
     .edit-input {
       flex: 1;
-      padding: 8px;
-      font-size: 16px;
-      border: 2px solid #667eea;
-      border-radius: 4px;
+      padding: 0.5rem;
+      font-size: 1rem;
+      border: 0.125rem solid #667eea;
+      border-radius: 0.25rem;
       outline: none;
     }
 
     .button-group {
       display: flex;
-      gap: 8px;
+      gap: 0.5rem;
     }
 
     button {
-      padding: 6px 12px;
+      padding: 0.375rem 0.75rem;
       border: none;
-      border-radius: 4px;
+      border-radius: 0.25rem;
       cursor: pointer;
-      font-size: 14px;
+      font-size: 0.875rem;
       transition: background 0.2s;
     }
 
