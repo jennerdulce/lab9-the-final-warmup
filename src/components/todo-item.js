@@ -27,7 +27,6 @@ export class TodoItem extends LitElement {
     }
 
     .todo-item:hover {
-      transform: translateX(4px);
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     }
 
