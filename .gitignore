@@ -1,0 +1,33 @@
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-store/
+
+# Build artifacts
+dist/
+build/
+out/
+
+# Logs
+*.log
+logs/
+
+# Editor/IDE specific files
+.vscode/
+.idea/
+*.swp
+.DS_Store # macOS specific
+Thumbs.db # Windows specific
+
+# Environment variables
+.env
+.env.*.local
+
+# npm package specific
+package-lock.json # If you're using yarn, you might include yarn.lock instead
+npm-shrinkwrap.json
+
+# Test coverage
+coverage/
