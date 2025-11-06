@@ -145,6 +145,26 @@ export class TodoModel {
   }
 
   /**
+   * Revert a completed todo back to active list
+   */
+  revertTodo(id) {
+    const completedIndex = this.completedTodos.findIndex(t => t.id === id);
+    if (completedIndex !== -1) {
+      const completedTodo = this.completedTodos[completedIndex];
+      // Move back to active todos and mark as incomplete
+      const activeTodo = {
+        ...completedTodo,
+        completed: false
+      };
+      delete activeTodo.completedAt;
+      this.todos.push(activeTodo);
+      this.completedTodos.splice(completedIndex, 1);
+      this.save();
+      this.notify();
+    }
+  }
+
+  /**
    * Get count of active todos
    */
   get activeCount() {

@@ -230,6 +230,10 @@ export class TodoApp extends LitElement {
     }
   }
 
+  handleRevertTodo(e) {
+    this.model.revertTodo(e.detail.id);
+  }
+
   handleTabChange(tab) {
     this.activeTab = tab;
   }
@@ -334,11 +338,13 @@ export class TodoApp extends LitElement {
       <div class="completed-list-container">
         <todo-list
           .todos=${this.completedTodosArray}
-          .showOnlyDelete=${true}
+          .showOnlyDelete=${false}
           .hideCheckbox=${true}
+          .showRevert=${true}
           @toggle-todo=${this.handleToggleTodo}
           @delete-todo=${this.handleDeleteTodo}
-          @update-todo=${this.handleUpdateTodo}>
+          @update-todo=${this.handleUpdateTodo}
+          @revert-todo=${this.handleRevertTodo}>
         </todo-list>
       </div>
 

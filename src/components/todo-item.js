@@ -9,7 +9,8 @@ export class TodoItem extends LitElement {
     isEditing: { state: true },
     editValue: { state: true },
     showOnlyDelete: { type: Boolean },
-    hideCheckbox: { type: Boolean }
+    hideCheckbox: { type: Boolean },
+    showRevert: { type: Boolean }
   };
 
   static styles = css`
@@ -108,6 +109,15 @@ export class TodoItem extends LitElement {
     .cancel-btn:hover {
       background: #616161;
     }
+
+    .revert-btn {
+      background: #2196F3;
+      color: white;
+    }
+
+    .revert-btn:hover {
+      background: #1976D2;
+    }
   `;
 
   constructor() {
@@ -132,6 +142,14 @@ export class TodoItem extends LitElement {
         composed: true
       }));
     }
+  }
+
+  handleRevert() {
+    this.dispatchEvent(new CustomEvent('revert-todo', {
+      detail: { id: this.todo.id },
+      bubbles: true,
+      composed: true
+    }));
   }
 
   handleEdit() {
@@ -198,7 +216,20 @@ export class TodoItem extends LitElement {
           ${this.todo.text}
         </span>
         <div class="button-group">
-          ${this.showOnlyDelete ? html`
+          ${this.showRevert ? html`
+            <button
+              class="revert-btn"
+              @click=${this.handleRevert}
+              aria-label="Revert to active">
+              Revert
+            </button>
+            <button
+              class="delete-btn"
+              @click=${this.handleDelete}
+              aria-label="Delete todo">
+              Delete
+            </button>
+          ` : this.showOnlyDelete ? html`
             <button
               class="delete-btn"
               @click=${this.handleDelete}
