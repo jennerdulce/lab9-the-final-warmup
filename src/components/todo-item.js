@@ -33,6 +33,15 @@ export class TodoItem extends LitElement {
       box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.1);
     }
 
+    .todo-item.completed-item {
+      box-shadow: 0 0.0625rem 0.1875rem rgba(0, 0, 0, 0.08);
+    }
+
+    .todo-item.completed-item:hover {
+      box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.15);
+      transform: translateY(-0.0625rem);
+    }
+
     .checkbox {
       width: 1.25rem;
       height: 1.25rem;
@@ -40,15 +49,27 @@ export class TodoItem extends LitElement {
     }
 
     .todo-text {
-      flex: 1;
       font-size: 1rem;
       color: #333;
       word-break: break-word;
     }
 
+    .todo-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
     .todo-text.completed {
       text-decoration: line-through;
       color: #999;
+    }
+
+    .completion-date {
+      font-size: 0.75rem;
+      color: #999;
+      font-style: italic;
+      margin-top: 0.25rem;
     }
 
     .edit-input {
@@ -202,7 +223,7 @@ export class TodoItem extends LitElement {
     }
 
     return html`
-      <div class="todo-item">
+      <div class="todo-item ${this.showRevert ? 'completed-item' : ''}">
         ${!this.hideCheckbox ? html`
           <input
             type="checkbox"
@@ -212,9 +233,22 @@ export class TodoItem extends LitElement {
             aria-label="Toggle todo"
           />
         ` : ''}
-        <span class="todo-text ${this.todo.completed ? 'completed' : ''}">
-          ${this.todo.text}
-        </span>
+        <div class="todo-content">
+          <span class="todo-text ${this.todo.completed ? 'completed' : ''}">
+            ${this.todo.text}
+          </span>
+          ${this.todo.completedAt ? html`
+            <div class="completion-date">
+              Completed: ${new Date(this.todo.completedAt).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+              })}
+            </div>
+          ` : ''}
+        </div>
         <div class="button-group">
           ${this.showRevert ? html`
             <button
