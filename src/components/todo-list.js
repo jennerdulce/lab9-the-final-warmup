@@ -3,13 +3,44 @@ import { repeat } from 'lit/directives/repeat.js';
 import './todo-item.js';
 
 /**
- * TodoList - Displays a list of todos
+ * @fileoverview TodoList - Component for displaying a list of todo items
+ * @author Lab 9 Team
+ * @version 1.0.0
+ */
+
+/**
+ * TodoList - Displays a list of todos with configurable behavior
+ * Renders todo items using efficient repeat directive for performance
+ * 
+ * @class TodoList
+ * @extends {LitElement}
+ * @description A container component that renders multiple todo items
+ *              with support for different display modes (active, completed)
+ * 
+ * @example
+ * <todo-list 
+ *   .todos=${this.todos}
+ *   .showOnlyDelete=${false}
+ *   .hideCheckbox=${false}
+ *   .showRevert=${false}>
+ * </todo-list>
  */
 export class TodoList extends LitElement {
+  /**
+   * Define reactive properties for LitElement
+   * 
+   * @static
+   * @readonly
+   * @type {Object}
+   */
   static properties = {
+    /** @type {Array} Array of todo objects to display */
     todos: { type: Array },
+    /** @type {boolean} Whether to show only delete button (no edit/toggle) */
     showOnlyDelete: { type: Boolean },
+    /** @type {boolean} Whether to hide the completion checkbox */
     hideCheckbox: { type: Boolean },
+    /** @type {boolean} Whether to show the revert button for completed todos */
     showRevert: { type: Boolean }
   };
 
@@ -61,11 +92,26 @@ export class TodoList extends LitElement {
     }
   `;
 
+  /**
+   * Creates a new TodoList instance
+   * Initializes the todos array to empty
+   * 
+   * @constructor
+   */
   constructor() {
     super();
+    
+    /** @type {Array} Array of todo objects to display */
     this.todos = [];
   }
 
+  /**
+   * Render the todo list UI
+   * Shows either an empty state or a scrollable list of todo items
+   * 
+   * @returns {TemplateResult} LitElement template for the todo list
+   * @description Uses the repeat directive for efficient rendering of todo items
+   */
   render() {
     if (this.todos.length === 0) {
       return html`

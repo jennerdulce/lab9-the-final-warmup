@@ -1,10 +1,34 @@
 import { LitElement, html, css } from 'lit';
 
 /**
+ * @fileoverview TodoForm - Input form component for adding new todos to the list
+ * @author Lab 9 Team
+ * @version 1.0.0
+ */
+
+/**
  * TodoForm - Input form for adding new todos
+ * Provides a text input and submit button for creating new todo items
+ * 
+ * @class TodoForm
+ * @extends {LitElement}
+ * @description A form component that handles todo creation with validation
+ * 
+ * @fires add-todo - Fired when a new todo is submitted with valid text
+ * 
+ * @example
+ * <todo-form @add-todo=${this.handleAddTodo}></todo-form>
  */
 export class TodoForm extends LitElement {
+  /**
+   * Define reactive properties for LitElement
+   * 
+   * @static
+   * @readonly
+   * @type {Object}
+   */
   static properties = {
+    /** @type {string} Current value of the input field */
     inputValue: { state: true }
   };
 
@@ -59,11 +83,27 @@ export class TodoForm extends LitElement {
     }
   `;
 
+  /**
+   * Creates a new TodoForm instance
+   * Initializes the input value to empty string
+   * 
+   * @constructor
+   */
   constructor() {
     super();
+    
+    /** @type {string} Current value of the input field */
     this.inputValue = '';
   }
 
+  /**
+   * Handle form submission
+   * Validates input and dispatches add-todo event if text is not empty
+   * 
+   * @param {Event} e - Form submit event
+   * @returns {void}
+   * @fires add-todo - Custom event with todo text in detail.text
+   */
   handleSubmit(e) {
     e.preventDefault();
     const text = this.inputValue.trim();
@@ -79,10 +119,22 @@ export class TodoForm extends LitElement {
     }
   }
 
+  /**
+   * Handle input field changes
+   * Updates the internal input value state
+   * 
+   * @param {Event} e - Input change event
+   * @returns {void}
+   */
   handleInput(e) {
     this.inputValue = e.target.value;
   }
 
+  /**
+   * Render the todo form UI
+   * 
+   * @returns {TemplateResult} LitElement template for the form
+   */
   render() {
     return html`
       <form @submit=${this.handleSubmit}>

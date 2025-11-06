@@ -5,13 +5,43 @@ import './todo-form.js';
 import './todo-list.js';
 
 /**
+ * @fileoverview TodoApp - Main application component that coordinates the entire todo application
+ * @author Lab 9 Team
+ * @version 1.0.0
+ */
+
+/**
  * TodoApp - Main application component
- * Coordinates between Model and View components
+ * Coordinates between Model and View components using the MVC pattern
+ * 
+ * @class TodoApp
+ * @extends {LitElement}
+ * @description The root component that manages the todo application state,
+ *              handles user interactions, and renders the UI
+ * 
+ * @fires add-todo - Fired when a new todo is added
+ * @fires toggle-todo - Fired when a todo completion status is toggled
+ * @fires delete-todo - Fired when a todo is deleted
+ * @fires update-todo - Fired when a todo text is updated
+ * @fires revert-todo - Fired when a completed todo is reverted from history
+ * 
+ * @example
+ * <todo-app></todo-app>
  */
 export class TodoApp extends LitElement {
+  /**
+   * Define reactive properties for LitElement
+   * 
+   * @static
+   * @readonly
+   * @type {Object}
+   */
   static properties = {
+    /** @type {Array} Array of active todos */
     todos: { state: true },
+    /** @type {Array} Array of completed todos in history */
     completedTodos: { state: true },
+    /** @type {string} Currently active tab ('active' or 'completed') */
     activeTab: { state: true }
   };
 
@@ -181,75 +211,171 @@ export class TodoApp extends LitElement {
     }
   `;
 
+  /**
+   * Creates a new TodoApp instance
+   * Initializes the storage service, model, and sets up reactive state
+   * 
+   * @constructor
+   */
   constructor() {
     super();
+    
+    /** @type {StorageService} Service for persisting data to localStorage */
     this.storageService = new StorageService();
+    
+    /** @type {TodoModel} The data model managing todo state and operations */
     this.model = new TodoModel(this.storageService);
+    
+    /** @type {Array} Local copy of active todos for reactive updates */
     this.todos = this.model.todos;
+    
+    /** @type {Array} Local copy of completed todos for reactive updates */
     this.completedTodos = this.model.completedTodos;
+    
+    /** @type {string} Currently active tab ('active' or 'completed') */
     this.activeTab = 'active'; // 'active' or 'completed'
 
-    // Subscribe to model changes
+    // Subscribe to model changes for reactive UI updates
     this.model.subscribe(() => {
       this.todos = [...this.model.todos];
       this.completedTodos = [...this.model.completedTodos];
     });
   }
 
+  /**
+   * Handle add todo event from todo-form component
+   * 
+   * @param {CustomEvent} e - Event containing todo text in detail.text
+   * @returns {void}
+   */
   handleAddTodo(e) {
     this.model.addTodo(e.detail.text);
   }
 
+  /**
+   * Handle toggle todo completion event from todo-item component
+   * 
+   * @param {CustomEvent} e - Event containing todo ID in detail.id
+   * @returns {void}
+   */
   handleToggleTodo(e) {
     this.model.toggleComplete(e.detail.id);
   }
 
+  /**
+   * Handle delete todo event from todo-item component
+   * 
+   * @param {CustomEvent} e - Event containing todo ID in detail.id
+   * @returns {void}
+   */
   handleDeleteTodo(e) {
     this.model.deleteTodo(e.detail.id);
   }
 
+  /**
+   * Handle update todo text event from todo-item component
+   * 
+   * @param {CustomEvent} e - Event containing todo ID and new text in detail
+   * @returns {void}
+   */
   handleUpdateTodo(e) {
     this.model.updateTodo(e.detail.id, e.detail.text);
   }
 
+  /**
+   * Handle clear completed todos action with user confirmation
+   * Moves all completed todos from active list to history
+   * 
+   * @returns {void}
+   */
   handleClearCompleted() {
     if (confirm('Move all completed todos to history?')) {
       this.model.clearCompleted();
     }
   }
 
+  /**
+   * Handle clear all todos action with user confirmation
+   * Removes all todos from both active and completed lists
+   * 
+   * @returns {void}
+   * @warning This action cannot be undone
+   */
   handleClearAll() {
     if (confirm('Clear ALL todos? This cannot be undone.')) {
       this.model.clearAll();
     }
   }
 
+  /**
+   * Handle clear completed history action with user confirmation
+   * Removes all todos from the completed history
+   * 
+   * @returns {void}
+   * @warning This action cannot be undone
+   */
   handleClearCompletedHistory() {
     if (confirm('Clear all completed todo history? This cannot be undone.')) {
       this.model.clearCompletedHistory();
     }
   }
 
+  /**
+   * Handle revert todo event from completed todo items
+   * Moves a completed todo back to the active list
+   * 
+   * @param {CustomEvent} e - Event containing todo ID in detail.id
+   * @returns {void}
+   */
   handleRevertTodo(e) {
     this.model.revertTodo(e.detail.id);
   }
 
+  /**
+   * Handle tab change between active and completed views
+   * 
+   * @param {string} tab - The tab to switch to ('active' or 'completed')
+   * @returns {void}
+   */
   handleTabChange(tab) {
     this.activeTab = tab;
   }
 
+  /**
+   * Get filtered list of active (non-completed) todos
+   * 
+   * @returns {Array} Array of todos that are not marked as completed
+   * @readonly
+   */
   get activeTodos() {
     return this.todos.filter(todo => !todo.completed);
   }
 
+  /**
+   * Get the completed todos array
+   * 
+   * @returns {Array} Array of completed todos in history
+   * @readonly
+   */
   get completedTodosArray() {
     return this.completedTodos;
   }
 
+  /**
+   * Get the todos to display based on the current active tab
+   * 
+   * @returns {Array} Array of todos for the currently active tab
+   * @readonly
+   */
   get displayedTodos() {
     return this.activeTab === 'active' ? this.todos : this.completedTodosArray;
   }
 
+  /**
+   * Render the todo application UI
+   * 
+   * @returns {TemplateResult} LitElement template for the todo app
+   */
   render() {
     return html`
       <div class="app-container">
@@ -295,6 +421,13 @@ export class TodoApp extends LitElement {
     `;
   }
 
+  /**
+   * Render the active tab content
+   * Shows the todo form, active todo list, and action buttons
+   * 
+   * @returns {TemplateResult} LitElement template for the active tab
+   * @private
+   */
   renderActiveTab() {
     return html`
       <todo-form
@@ -325,6 +458,13 @@ export class TodoApp extends LitElement {
     `;
   }
 
+  /**
+   * Render the completed tab content
+   * Shows completed todos from history with revert and delete options
+   * 
+   * @returns {TemplateResult} LitElement template for the completed tab
+   * @private
+   */
   renderCompletedTab() {
     if (this.completedTodosArray.length === 0) {
       return html`
