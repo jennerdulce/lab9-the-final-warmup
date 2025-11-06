@@ -10,7 +10,9 @@ import './todo-list.js';
  */
 export class TodoApp extends LitElement {
   static properties = {
-    todos: { state: true }
+    todos: { state: true },
+    completedTodos: { state: true },
+    activeTab: { state: true }
   };
 
   static styles = css`
@@ -110,6 +112,65 @@ export class TodoApp extends LitElement {
       cursor: not-allowed;
     }
 
+    .tabs {
+      display: flex;
+      gap: 0.25rem;
+      margin-bottom: 1.25rem;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 0.5rem;
+      padding: 0.25rem;
+      box-shadow: 0 0.125rem 0.5rem rgba(102, 126, 234, 0.3);
+    }
+
+    .tab {
+      flex: 1;
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 0.375rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background: transparent;
+      color: rgba(255, 255, 255, 0.8);
+      text-shadow: 0 0.0625rem 0.125rem rgba(0, 0, 0, 0.2);
+    }
+
+    .tab.active {
+      background: white;
+      color: #667eea;
+      box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.15);
+      text-shadow: none;
+      transform: translateY(-0.0625rem);
+    }
+
+    .tab:hover:not(.active) {
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      transform: translateY(-0.03125rem);
+    }
+
+    .tab-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .completed-empty-state {
+      text-align: center;
+      padding: 2.5rem 1.25rem;
+      color: #666;
+      font-style: italic;
+      min-height: 14rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .completed-list-container {
+      min-height: 14rem;
+    }
+
     .footer {
       margin-top: 1.25rem;
       padding-top: 1.25rem;
@@ -125,10 +186,13 @@ export class TodoApp extends LitElement {
     this.storageService = new StorageService();
     this.model = new TodoModel(this.storageService);
     this.todos = this.model.todos;
+    this.completedTodos = this.model.completedTodos;
+    this.activeTab = 'active'; // 'active' or 'completed'
 
     // Subscribe to model changes
     this.model.subscribe(() => {
       this.todos = [...this.model.todos];
+      this.completedTodos = [...this.model.completedTodos];
     });
   }
 
@@ -149,7 +213,7 @@ export class TodoApp extends LitElement {
   }
 
   handleClearCompleted() {
-    if (confirm('Clear all completed todos?')) {
+    if (confirm('Move all completed todos to history?')) {
       this.model.clearCompleted();
     }
   }
@@ -160,6 +224,28 @@ export class TodoApp extends LitElement {
     }
   }
 
+  handleClearCompletedHistory() {
+    if (confirm('Clear all completed todo history? This cannot be undone.')) {
+      this.model.clearCompletedHistory();
+    }
+  }
+
+  handleTabChange(tab) {
+    this.activeTab = tab;
+  }
+
+  get activeTodos() {
+    return this.todos.filter(todo => !todo.completed);
+  }
+
+  get completedTodosArray() {
+    return this.completedTodos;
+  }
+
+  get displayedTodos() {
+    return this.activeTab === 'active' ? this.todos : this.completedTodosArray;
+  }
+
   render() {
     return html`
       <div class="app-container">
@@ -168,7 +254,7 @@ export class TodoApp extends LitElement {
 
         <div class="stats">
           <div class="stat-item">
-            <div class="stat-value">${this.todos.length}</div>
+            <div class="stat-value">${this.todos.length + this.completedTodos.length}</div>
             <div class="stat-label">Total</div>
           </div>
           <div class="stat-item">
@@ -176,40 +262,92 @@ export class TodoApp extends LitElement {
             <div class="stat-label">Active</div>
           </div>
           <div class="stat-item">
-            <div class="stat-value">${this.model.completedCount}</div>
-            <div class="stat-label">Completed</div>
+            <div class="stat-value">${this.model.completedHistoryCount}</div>
+            <div class="stat-label">History</div>
           </div>
         </div>
 
-        <todo-form
-          @add-todo=${this.handleAddTodo}>
-        </todo-form>
-
-        <todo-list
-          .todos=${this.todos}
-          @toggle-todo=${this.handleToggleTodo}
-          @delete-todo=${this.handleDeleteTodo}
-          @update-todo=${this.handleUpdateTodo}>
-        </todo-list>
-
-        <div class="actions">
-          <button
-            class="clear-completed"
-            @click=${this.handleClearCompleted}
-            ?disabled=${this.model.completedCount === 0}>
-            Clear Completed
+        <div class="tabs">
+          <button 
+            class="tab ${this.activeTab === 'active' ? 'active' : ''}"
+            @click=${() => this.handleTabChange('active')}>
+            Active Tasks
           </button>
-          <button
-            class="clear-all"
-            @click=${this.handleClearAll}
-            ?disabled=${this.todos.length === 0}>
-            Clear All
+          <button 
+            class="tab ${this.activeTab === 'completed' ? 'active' : ''}"
+            @click=${() => this.handleTabChange('completed')}>
+            Completed
           </button>
+        </div>
+
+        <div class="tab-content">
+          ${this.activeTab === 'active' ? this.renderActiveTab() : this.renderCompletedTab()}
         </div>
 
         <div class="footer">
           Lab 9: The final battle!
         </div>
+      </div>
+    `;
+  }
+
+  renderActiveTab() {
+    return html`
+      <todo-form
+        @add-todo=${this.handleAddTodo}>
+      </todo-form>
+
+      <todo-list
+        .todos=${this.todos}
+        @toggle-todo=${this.handleToggleTodo}
+        @delete-todo=${this.handleDeleteTodo}
+        @update-todo=${this.handleUpdateTodo}>
+      </todo-list>
+
+      <div class="actions">
+        <button
+          class="clear-completed"
+          @click=${this.handleClearCompleted}
+          ?disabled=${this.model.completedCount === 0}>
+          Move Completed to History (${this.model.completedCount})
+        </button>
+        <button
+          class="clear-all"
+          @click=${this.handleClearAll}
+          ?disabled=${this.todos.length + this.completedTodos.length === 0}>
+          Clear All
+        </button>
+      </div>
+    `;
+  }
+
+  renderCompletedTab() {
+    if (this.completedTodosArray.length === 0) {
+      return html`
+        <div class="completed-empty-state">
+          No completed todos yet. Complete some tasks to see them here!
+        </div>
+      `;
+    }
+
+    return html`
+      <div class="completed-list-container">
+        <todo-list
+          .todos=${this.completedTodosArray}
+          .showOnlyDelete=${true}
+          @toggle-todo=${this.handleToggleTodo}
+          @delete-todo=${this.handleDeleteTodo}
+          @update-todo=${this.handleUpdateTodo}>
+        </todo-list>
+      </div>
+
+      <div class="actions">
+        <button
+          class="clear-completed"
+          @click=${this.handleClearCompletedHistory}
+          style="max-width: 200px; margin: 0 auto;">
+          Clear History
+        </button>
       </div>
     `;
   }

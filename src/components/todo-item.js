@@ -7,7 +7,8 @@ export class TodoItem extends LitElement {
   static properties = {
     todo: { type: Object },
     isEditing: { state: true },
-    editValue: { state: true }
+    editValue: { state: true },
+    showOnlyDelete: { type: Boolean }
   };
 
   static styles = css`
@@ -194,19 +195,28 @@ export class TodoItem extends LitElement {
           ${this.todo.text}
         </span>
         <div class="button-group">
-          <button
-            class="edit-btn"
-            @click=${this.handleEdit}
-            ?disabled=${this.todo.completed}
-            aria-label="Edit todo">
-            Edit
-          </button>
-          <button
-            class="delete-btn"
-            @click=${this.handleDelete}
-            aria-label="Delete todo">
-            Delete
-          </button>
+          ${this.showOnlyDelete ? html`
+            <button
+              class="delete-btn"
+              @click=${this.handleDelete}
+              aria-label="Delete todo">
+              Delete
+            </button>
+          ` : html`
+            <button
+              class="edit-btn"
+              @click=${this.handleEdit}
+              ?disabled=${this.todo.completed}
+              aria-label="Edit todo">
+              Edit
+            </button>
+            <button
+              class="delete-btn"
+              @click=${this.handleDelete}
+              aria-label="Delete todo">
+              Delete
+            </button>
+          `}
         </div>
       </div>
     `;
