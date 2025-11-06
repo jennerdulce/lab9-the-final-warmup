@@ -1,6 +1,6 @@
 # Lab 9: The Final Warmup - Professional Todo Web Application
 
-**Live Demo**: [Lab 9: Reclaiming a "Brown Field" and Final Tooling Practice by Jenner Dulce](https://lab8-ai-services-jdd.netlify.app/)
+**Live Demo**: [Lab 9: Reclaiming a "Brown Field" and Final Tooling Practice by Jenner Dulce](https://lab-9-the-final-warmup-jdd.netlify.app/)
 **Repository**: [jennerdulce/lab9-the-final-warmup](https://github.com/jennerdulce/lab9-the-final-warmup)
 
 ## Table of Contents
