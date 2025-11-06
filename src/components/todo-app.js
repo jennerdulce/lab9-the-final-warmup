@@ -335,6 +335,7 @@ export class TodoApp extends LitElement {
         <todo-list
           .todos=${this.completedTodosArray}
           .showOnlyDelete=${true}
+          .hideCheckbox=${true}
           @toggle-todo=${this.handleToggleTodo}
           @delete-todo=${this.handleDeleteTodo}
           @update-todo=${this.handleUpdateTodo}>

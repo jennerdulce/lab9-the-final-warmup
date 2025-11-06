@@ -8,7 +8,8 @@ import './todo-item.js';
 export class TodoList extends LitElement {
   static properties = {
     todos: { type: Array },
-    showOnlyDelete: { type: Boolean }
+    showOnlyDelete: { type: Boolean },
+    hideCheckbox: { type: Boolean }
   };
 
   static styles = css`
@@ -79,7 +80,7 @@ export class TodoList extends LitElement {
         ${repeat(
           this.todos,
           (todo) => todo.id,
-          (todo) => html`<todo-item .todo=${todo} .showOnlyDelete=${this.showOnlyDelete}></todo-item>`
+          (todo) => html`<todo-item .todo=${todo} .showOnlyDelete=${this.showOnlyDelete} .hideCheckbox=${this.hideCheckbox}></todo-item>`
         )}
       </div>
     `;

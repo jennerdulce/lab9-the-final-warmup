@@ -8,7 +8,8 @@ export class TodoItem extends LitElement {
     todo: { type: Object },
     isEditing: { state: true },
     editValue: { state: true },
-    showOnlyDelete: { type: Boolean }
+    showOnlyDelete: { type: Boolean },
+    hideCheckbox: { type: Boolean }
   };
 
   static styles = css`
@@ -184,13 +185,15 @@ export class TodoItem extends LitElement {
 
     return html`
       <div class="todo-item">
-        <input
-          type="checkbox"
-          class="checkbox"
-          .checked=${this.todo.completed}
-          @change=${this.handleToggle}
-          aria-label="Toggle todo"
-        />
+        ${!this.hideCheckbox ? html`
+          <input
+            type="checkbox"
+            class="checkbox"
+            .checked=${this.todo.completed}
+            @change=${this.handleToggle}
+            aria-label="Toggle todo"
+          />
+        ` : ''}
         <span class="todo-text ${this.todo.completed ? 'completed' : ''}">
           ${this.todo.text}
         </span>
